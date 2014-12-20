@@ -1,11 +1,4 @@
-// start slingin' some d3 here.
-jQuery.fn.rotate = function(degrees) {
-    $(this).css({'-webkit-transform' : 'rotate('+ degrees +'deg)',
-                 '-moz-transform' : 'rotate('+ degrees +'deg)',
-                 '-ms-transform' : 'rotate('+ degrees +'deg)',
-                 'transform' : 'rotate('+ degrees +'deg)'});
-    return $(this);
-};
+
 
 var asteroidWidth = 40;
 var asteroidHeight = 40;
@@ -36,7 +29,7 @@ var player = {
     }
 
   $('.player').css("top", this.y).css("left", this.x);
-  $('.player').rotate(player.angle);
+  $('.player').css('transform', 'rotate('+ this.angle +'deg)');
   // player.setPos(player.x, player.y - player.velocity);
 
   },
