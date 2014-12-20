@@ -17,6 +17,9 @@ var round = 0;
 var player = {
   x: gameWidth / 2,
   y: gameHeight / 2,
+  totalVelocity: function() {
+    return Math.sqrt(Math.pow(this.velocity.x, 2) + Math.pow(this.velocity.y, 2))
+  },
   setPos: function() {
     this.x += this.velocity.x;
     this.y -= this.velocity.y;
@@ -24,30 +27,35 @@ var player = {
     if (this.y < -this.height) {
       this.y = gameHeight;
     } else if (this.y > gameHeight) {
-      this.y = 0;
+      this.y = -this.height;
     }
     if (this.x < -this.width) {
       this.x = gameWidth;
     } else if (this.x > gameWidth) {
-      this.x = 0;
+      this.x = -this.width;
     }
 
-  $('.player').css("top", this.y).css("left", this.x)
+  $('.player').css("top", this.y).css("left", this.x);
+  $('.player').rotate(player.angle);
   // player.setPos(player.x, player.y - player.velocity);
 
   },
   angle: 0,
+  stopAngle: 0,
   velocity: { x : 0, y : 0 },
   acceleration: { x : 0, y : 0 },
   height: 80,
   width: 60
 };
 var gameVariables = {
-  acceleration:  .1,
+  acceleration:  .05,
   isAccelerating: false,
-  timePressed: 0
+  timePressed: 0,
+  turnRate: 8,
+  maxVelocity: 25,
+  minVelocity: 2,
+  boost: 1
 }
-var timePressed = 0;
 
 var createAsteroids = function (n) {
   for (var i = 0; i < n; i++) {
@@ -94,20 +102,26 @@ var updateGraphics = function() {
 };
 
 var gameCycle = function () {
+  // Controls
+  console.log(gameVariables.left);
+  player.angle += gameVariables.right ? gameVariables.turnRate : 0;
+  player.angle -= gameVariables.left ? gameVariables.turnRate : 0;
   // check acceleration state
+  // console.log('vx: ' + player.velocity.x, 'vy: ' + player.velocity.y);
+  // console.log(gameVariables.isAccelerating, player.angle);
+  // console.log(Math.sin(player.angle / 180 * Math.PI), Math.cos(player.angle / 180 * Math.PI));
+  // console.log('---------');
   if (gameVariables.isAccelerating) {
-    gameVariables.timePressed++;
     // accelerate
-    player.velocity.x = gameVariables.timePressed * gameVariables.acceleration * Math.sin(player.angle / 180 * Math.PI);
-    player.velocity.y = gameVariables.timePressed * gameVariables.acceleration * Math.cos(player.angle / 180 * Math.PI);
-    // console.log(player.velocity);
+    if (player.totalVelocity() < gameVariables.maxVelocity) {
+      player.velocity.x += gameVariables.timePressed * gameVariables.acceleration * Math.sin(player.angle / 180 * Math.PI);
+      player.velocity.y += gameVariables.timePressed * gameVariables.acceleration * Math.cos(player.angle / 180 * Math.PI);
+      // console.log(player.velocity);
+    }
   } else {
     // decelerate
-    if (gameVariables.timePressed > 0) {
-      gameVariables.timePressed-=0.5;
-    }
-    player.velocity.x = gameVariables.timePressed * gameVariables.acceleration * Math.sin(player.angle / 180 * Math.PI);
-    player.velocity.y = gameVariables.timePressed * gameVariables.acceleration * Math.cos(player.angle / 180 * Math.PI);
+    player.velocity.x = player.velocity.x * (1 - gameVariables.acceleration);
+    player.velocity.y = player.velocity.y * (1 - gameVariables.acceleration);
     // console.log(player.velocity);
     // console.log(player.angle);
   }
@@ -123,25 +137,39 @@ var gameCycle = function () {
 
 // ---------------------------------------------KEY HANDLERS
 $( 'body' ).keydown(function(e) {
-  if (e.keyCode === 37) {
-    // LEFT
-    player.angle -= 10;
-  } else if (e.keyCode === 39) {
-    //RIGHT
-    player.angle += 10;
-  } else if (e.keyCode === 38) {
-    // UP
+  if (e.keyCode === 37) {           // LEFT
+    gameVariables.left = true;
+  } else if (e.keyCode === 39) {    // RIGHT
+    gameVariables.right = true;
+  } else if (e.keyCode === 38) {    // UP
+    if (gameVariables.isAccelerating == false) {
+      if (player.totalVelocity() < gameVariables.minVelocity )  {
+        player.velocity.x = gameVariables.minVelocity * Math.sin(player.angle / 180 * Math.PI);
+        player.velocity.y = gameVariables.minVelocity * Math.cos(player.angle / 180 * Math.PI);
+      }
+    }
+    player.velocity.x += gameVariables.boost * Math.sin(player.angle / 180 * Math.PI);
+    player.velocity.y += gameVariables.boost * Math.cos(player.angle / 180 * Math.PI);
     gameVariables.isAccelerating = true;
-  } else if (e.keyCode === 40) {
-    //DOWN
+    gameVariables.timePressed+=10;
+  } else if (e.keyCode === 40) {      //DOWN
+    console.log('down\n');
   }
 
-  $('.player').rotate(player.angle);
+
 });
 
 $( 'body' ).keyup(function(e) {
+  if (e.keyCode === 37) {
+    gameVariables.left = false;
+  }
+  if (e.keyCode === 39) {
+    gameVariables.right = false;
+  }
   if (e.keyCode === 38) {
     gameVariables.isAccelerating = false;
+    gameVariables.timePressed = 0;
+    player.stopAngle = Math.PI * Math.atan(player.velocity.x / player.velocity.y);
   }
 });
 
