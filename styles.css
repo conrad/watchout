@@ -2,4 +2,28 @@
 
 /* Note: an asteroid image is included in this repo.
 Feel free to use it if you like. */
+html, body { margin:0; padding:0; overflow:hidden;   background: black; }
 
+
+.gamefield {
+  position:fixed;
+  top:0;
+  left:0;
+  height:100%;
+  width:100%;
+}
+.scoreboard {
+  color: white;
+  margin: 10px;
+}
+.player {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  background: url("img/falcon.png");
+  background-repeat: no-repeat;
+  background-size: 70% 90%;
+  background-position: 50% 0%;
+  width: 80px;
+  height: 80px;
+}
