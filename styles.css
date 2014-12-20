@@ -28,3 +28,11 @@ html, body { margin:0; padding:0; overflow:hidden;   background: black; }
   height: 80px;
   /*background-color: red;*/
 }
+.explosion {
+  position: fixed;
+  background: url("img/explosion.gif");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  width: 80px;
+  height: 80px;
+}

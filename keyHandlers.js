@@ -1,5 +1,8 @@
 // ---------------------------------------------KEY HANDLERS
 $( 'body' ).keydown(function(e) {
+  if (e.keyCode === 32) {             // SPACE
+    gameVariables.firing = true;
+  }
   if (e.keyCode === 37) {           // LEFT
     gameVariables.left = true;
   } else if (e.keyCode === 39) {    // RIGHT
@@ -26,6 +29,9 @@ $( 'body' ).keydown(function(e) {
 });
 
 $( 'body' ).keyup(function(e) {
+  if (e.keyCode === 32) {             // SPACE
+    gameVariables.firing = false;
+  }
   if (e.keyCode === 37) {
     gameVariables.left = false;
   }

@@ -1,11 +1,22 @@
 
 var asteroidWidth = 40;
 var asteroidHeight = 40;
-var asteroids = [];
+var asteroids = {
+  nextId : function() {
+    return this.maxId++;
+  },
+  maxId : 0,
+  createArray : function() {
+    var array = [];
+    for (var i = 0; i < this.maxId; i++) {
+      array.push(this[i]);
+    }
+    return array;
+  }
+};
 var gameHeight = $(".gamefield").height();
 var gameWidth = $(".gamefield").width();
 var graphics;
-var round = 0;
 var player = {
   x: gameWidth / 2,
   y: gameHeight / 2,
@@ -52,5 +63,6 @@ var gameVariables = {
   turnRate: 8,
   maxVelocity: 22,
   minVelocity: 2,
-  boost: 1
+  boost: 1,
+  firing: false
 };
