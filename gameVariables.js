@@ -19,7 +19,7 @@ var asteroids = {
 };
 var gameHeight = $(".gamefield").height();
 var gameWidth = $(".gamefield").width();
-var graphics;
+
 var player = {
   x: gameWidth / 2,
   y: gameHeight / 2,
@@ -69,3 +69,6 @@ var gameVariables = {
   boost: 1,
   firing: false
 };
+
+var stars = [];
+var graphics, starGraphics;

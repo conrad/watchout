@@ -40,6 +40,14 @@ var moveAsteroids = function () {
 
 var initializeGraphics = function() {
 
+  starGraphics = d3.select("svg").selectAll('circle').data(stars, function(d) { return d.id; });
+  starGraphics.enter().append('circle')
+    .attr('r', function(d) { return d.radius; })
+    .attr('fill', 'white')
+    .attr('cx', function(d) { return d.x; })
+    .attr('cy', function(d) { return d.y; });
+
+
   graphics = d3.select("svg").selectAll('image').data(asteroids.createArray(), function(d) { return d.id; });
   graphics.enter().append("image")
     .attr("xlink:href", randomAsteroid)
@@ -49,12 +57,20 @@ var initializeGraphics = function() {
     .attr('y', function(d) { return d.y; });
 };
 
+
 var updateGraphics = function() {
   graphics = d3.select("svg").selectAll('image').data(asteroids.createArray(), function(d) { return d.id; });
   graphics.transition().ease('linear').duration(4000)
     .tween('custom', tweenWithCollisionDetection)
     .attr('x', function(d) { return d.x; })
     .attr('y', function(d) { return d.y; });
+};
+
+var updateStars = function() {
+  starGraphics = d3.select("svg").selectAll('circle').data(stars, function(d) { return d.id; });
+  starGraphics.transition().ease('linear').duration(200000)
+    .attr('cx', function(d) { return d.x; })
+    .attr('cy', function(d) { return d.y; });
 };
 
 var explode = function(x, y) {
@@ -178,8 +194,6 @@ var checkLaser = function(enemy, laserCallback) {
   var dx = ax - px;
   var dy = ay - py;
   var slope = - Math.cos(Math.PI * player.angle / 180) / Math.sin(Math.PI * player.angle / 180);
-  console.log('cos', Math.cos(Math.PI * player.angle / 180), 'sin', Math.sin(Math.PI * player.angle / 180), 'slope', slope);
-  console.log(player.angle);
   // only hit asteroids on gamefield
   if (ax > 0 && ay > 0 && ax < gameWidth && ay < gameHeight) {      // may need to adjust if not hitting ones on edges
 
@@ -197,7 +211,6 @@ var checkLaser = function(enemy, laserCallback) {
 };
 
 var onLaser  = function(enemy) {
-  console.log(enemy.data()[0].id);
   delete asteroids[enemy.data()[0].id];
   explode(enemy.attr('x'), enemy.attr('y'));
   // debugger;
@@ -206,6 +219,43 @@ var onLaser  = function(enemy) {
   graphics.exit().remove();
   // add all matching enemies to array
 };
+
+
+var Star = function(id) {
+  this.id = id;
+  this.radius = Math.random() * 3;
+  this.x = Math.random() * gameWidth;
+  this.y = (Math.random() * 4 * gameHeight);
+}
+
+Star.prototype.center = function() {
+  return [this.x + this.radius / 2, this.y + this.radius / 2];
+};
+Star.prototype.nextMove = function() {
+
+  this.y -= (Math.random() * this.radius * gameHeight)
+};
+
+var createStars = function (n) {
+  for (var i = 0; i < n; i++) {
+    var star = new Star(i);
+    stars[i] = star;
+  }
+};
+
+
+var moveStars = function () {
+  for (var i = 0; i < stars.length; i++) {
+    stars[i].nextMove();
+  }
+  updateStars();
+};
+
+
+
+
+
+
 
 
 var chooseVehicle = function () {

@@ -20,12 +20,12 @@ html, body { margin:0; padding:0; overflow:hidden;   background: black; }
   position: fixed;
   top: 50%;
   left: 50%;
-  background: url("img/falcon_long.png");
+  background: url("img/zamboni.png");   /*("img/falcon_long.png");*/
   background-repeat: no-repeat;
   background-size: 70% 90%;
   background-position: 50% 0%;
   width: 80px;
-  height: 80px;
+  height: 100px;
   /*background-color: red;*/
   z-index: 10;
 }
