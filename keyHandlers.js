@@ -2,6 +2,7 @@
 $( 'body' ).keydown(function(e) {
   if (e.keyCode === 32) {             // SPACE
     gameVariables.firing = true;
+    setTimeout( function() { gameVariables.firing = false; }, 500);
   }
   if (e.keyCode === 37) {           // LEFT
     gameVariables.left = true;

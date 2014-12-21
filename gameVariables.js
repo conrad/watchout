@@ -1,6 +1,6 @@
 
-var asteroidWidth = 40;
-var asteroidHeight = 40;
+var asteroidWidth = 80;
+var asteroidHeight = 80;
 var asteroids = {
   nextId : function() {
     return this.maxId++;
@@ -8,8 +8,11 @@ var asteroids = {
   maxId : 0,
   createArray : function() {
     var array = [];
-    for (var i = 0; i < this.maxId; i++) {
-      array.push(this[i]);
+    for (var key in this) {
+      // test to determine whether key is a number (from string format)
+      if ((key)*1 >= 0) {
+        array.push(this[key]);
+      }
     }
     return array;
   }

@@ -22,10 +22,8 @@ var gameCycle = function () {
     player.velocity.x = player.velocity.x * (1 - gameVariables.acceleration * .2);
     player.velocity.y = player.velocity.y * (1 - gameVariables.acceleration * .2);
   }
-  if (gameVariables.firing) {
-  }
 
-
+  fireLaser();
   player.setPos();
   // Collisions check in boardState.js / gameSetup.js
 };
