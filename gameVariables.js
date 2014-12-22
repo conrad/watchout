@@ -1,11 +1,12 @@
 
-var asteroidWidth = 80;
-var asteroidHeight = 80;
 var asteroids = {
   nextId : function() {
     return this.maxId++;
   },
   maxId : 0,
+  // width : 80,
+  // height : 80,
+
   createArray : function() {
     var array = [];
     for (var key in this) {
@@ -23,9 +24,27 @@ var gameWidth = $(".gamefield").width();
 var player = {
   x: gameWidth / 2,
   y: gameHeight / 2,
-  vehicle: 'falcon',
+
+  vehicles: ['falcon', 'fighter', 'zamboni'],
+  // include a tuple of images for each vehicle (still, accelerating) with the key set to the vehicle name in the vehicles array
+  images: {
+    falcon : ['img/falcon_long.png', 'img/falcon_glow.png'],
+    fighter : ['img/fighterjet.png', 'img/fighterjet.png'],
+    zamboni : ['img/zamboni.png', 'img/zamboni-fire.png']
+  },
+  vehicle: 'falcon', //it breaks when I do this: this.vehicles[1],       // set initial vehicle
+  nextVehicle: function () {
+    var i = this.vehicles.indexOf(this.vehicle);
+    if ( i + 1 < this.vehicles.length) {
+      this.vehicle = this.vehicles[i + 1];
+      console.log(this.vehicle);
+    } else {
+      this.vehicle = this.vehicles[0];
+    }
+  },
+
   totalVelocity: function() {
-    return Math.sqrt(Math.pow(this.velocity.x, 2) + Math.pow(this.velocity.y, 2))
+    return Math.sqrt(Math.pow(this.velocity.x, 2) + Math.pow(this.velocity.y, 2));
   },
   setPos: function() {
     this.x += this.velocity.x;
@@ -60,14 +79,17 @@ var player = {
   }
 };
 var gameVariables = {
-  acceleration:  .05,
-  isAccelerating: false,
-  timePressed: 0,
-  turnRate: 8,
-  maxVelocity: 22,
-  minVelocity: 2,
-  boost: 1,
-  firing: false
+  acceleration   : 0.05,
+  isAccelerating : false,
+  timePressed    : 0,
+  turnRate       : 8,
+  maxVelocity    : 22,
+  minVelocity    : 2,
+  boost          : 1,
+  firing         : false,
+  asteroidWidth  : 80,
+  asteroidHeight : 80
+
 };
 
 var stars = [];

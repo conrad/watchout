@@ -1,21 +1,21 @@
 var randomAsteroid = function() {
   var asteroidChoices = ["img/Spinning-asteroid.gif", "img/asteroid_2.gif", "img/asteroid_3.gif", "img/asteroid_4.gif"];
   return asteroidChoices[Math.floor(Math.random() * asteroidChoices.length)];
-}
+};
 
 var Asteroid = function(id) {
   this.id = id;
-  this.x = Math.random() * (gameWidth - asteroidWidth);
-  this.y = Math.random() * (gameHeight - asteroidHeight);
+  this.x = Math.random() * (gameWidth - gameVariables.asteroidWidth);
+  this.y = Math.random() * (gameHeight - gameVariables.asteroidHeight);
   this.collided = false;
-}
+};
 
 Asteroid.prototype.center = function() {
-  return [this.x + asteroidWidth / 2, this.y + asteroidHeight / 2];
+  return [this.x + gameVariables.asteroidWidth / 2, this.y + gameVariables.asteroidHeight / 2];
 };
 Asteroid.prototype.nextMove = function() {
-  this.x = Math.random() * 3 * (gameWidth - asteroidWidth) - gameWidth;
-  this.y = Math.random() * 3 * (gameHeight - asteroidHeight) - gameHeight;
+  this.x = Math.random() * 3 * (gameWidth - gameVariables.asteroidWidth) - gameWidth;
+  this.y = Math.random() * 3 * (gameHeight - gameVariables.asteroidHeight) - gameHeight;
 };
 
 var createAsteroids = function (n) {
@@ -25,7 +25,6 @@ var createAsteroids = function (n) {
     asteroids[id] = asteroid;
   }
 };
-
 
 var moveAsteroids = function () {
   for (var i = 0; i < asteroids.maxId; i++) {
@@ -51,8 +50,8 @@ var initializeGraphics = function() {
   graphics = d3.select("svg").selectAll('image').data(asteroids.createArray(), function(d) { return d.id; });
   graphics.enter().append("image")
     .attr("xlink:href", randomAsteroid)
-    .attr('height', asteroidHeight + 'px')
-    .attr('width', asteroidWidth + 'px')
+    .attr('height', gameVariables.asteroidHeight + 'px')
+    .attr('width', gameVariables.asteroidWidth + 'px')
     .attr('x', function(d) { return d.x; })
     .attr('y', function(d) { return d.y; });
 };
@@ -73,6 +72,8 @@ var updateStars = function() {
     .attr('cy', function(d) { return d.y; });
 };
 
+
+
 var explode = function(x, y) {
   // create div with explosion background
   var $explosion = $('<div></div>').addClass('explosion');
@@ -81,6 +82,8 @@ var explode = function(x, y) {
   $explosion.appendTo('body');
   setTimeout( function() { $explosion.remove(); }, 700);
 };
+
+
 
 var tweenWithCollisionDetection = function(endData) {
       var endPos, enemy, startPos;
@@ -110,9 +113,9 @@ var tweenWithCollisionDetection = function(endData) {
 
 var checkCollision = function(enemy, collidedCallback) {
       var radiusSum, separation, xDiff, yDiff;
-      radiusSum = asteroidWidth / 2 + player.width() / 2;
-      xDiff = parseFloat(enemy.attr('x')) - player.center()[0];
-      yDiff = parseFloat(enemy.attr('y')) - player.center()[1] -10;
+      radiusSum = gameVariables.asteroidWidth / 2 + player.width() / 2;
+      xDiff = parseFloat(enemy.attr('x')) - player.center()[0] - 30;
+      yDiff = parseFloat(enemy.attr('y')) - player.center()[1] - 30;
       separation = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
       if (separation < radiusSum) return collidedCallback(player, enemy);
     };
@@ -121,11 +124,6 @@ var onCollision = function (player, enemy) {
   // console.log(enemy.attr('x'));
   // enemy = enemy.data()[0];
   if (enemy.data()[0].collided === false) {
-
-
-
-    // console.log(asteroids.maxId);
-    // player.$element.css('background', 'red');
 
     // create new asteroid at collision location      TURN THIS INTO A FUNCTION
     var newId = asteroids.nextId();
@@ -139,8 +137,8 @@ var onCollision = function (player, enemy) {
     graphics = d3.select("svg").selectAll('image').data([newAsteroid], function(d) { return d.id; });
     graphics.enter().append("image")
       .attr("xlink:href", randomAsteroid())
-      .attr('height', asteroidHeight + 'px')
-      .attr('width', asteroidWidth + 'px')
+      .attr('height', gameVariables.asteroidHeight + 'px')
+      .attr('width', gameVariables.asteroidWidth + 'px')
       .attr('x', function(d) { return d.x; })
       .attr('y', function(d) { return d.y; });
 
@@ -167,7 +165,7 @@ var onCollision = function (player, enemy) {
       .attr('y', function(d) { return d.y; });
 
   }
-}
+};
 
 var fireLaser = function() {
     if (gameVariables.firing) {
@@ -186,11 +184,11 @@ var fireLaser = function() {
 
 var checkLaser = function(enemy, laserCallback) {
   // px, py, radius, ax, ay, angle
-  var radius = asteroidWidth / 2;
+  var radius = gameVariables.asteroidWidth / 2;
   var px = player.center()[0];
   var py = player.center()[1];
-  var ax = enemy.attr('x') + asteroidWidth / 2;    // px = player x
-  var ay = enemy.attr('y') + asteroidWidth / 2;
+  var ax = enemy.attr('x') + gameVariables.asteroidWidth / 2;    // px = player x
+  var ay = enemy.attr('y') + gameVariables.asteroidWidth / 2;
   var dx = ax - px;
   var dy = ay - py;
   var slope = - Math.cos(Math.PI * player.angle / 180) / Math.sin(Math.PI * player.angle / 180);

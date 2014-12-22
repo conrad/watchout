@@ -1,6 +1,9 @@
 // ---------------------------------------------KEY HANDLERS
 $( 'body' ).keydown(function(e) {
-  if (e.keyCode === 32) {             // SPACE
+  if (e.keyCode === 13) {           // ENTER
+    player.nextVehicle();
+  }
+  if (e.keyCode === 32) {           // SPACE
     gameVariables.firing = true;
     setTimeout( function() { gameVariables.firing = false; }, 500);
   }
@@ -8,9 +11,11 @@ $( 'body' ).keydown(function(e) {
     gameVariables.left = true;
   } else if (e.keyCode === 39) {    // RIGHT
     gameVariables.right = true;
+    console.log(player.x, player.y);
+
   }
   if (e.keyCode === 38) {    // UP
-    if (gameVariables.isAccelerating == false) {
+    if (gameVariables.isAccelerating === false) {
       if (player.totalVelocity() < gameVariables.minVelocity )  {
         player.velocity.x = gameVariables.minVelocity * Math.sin(player.angle / 180 * Math.PI);
         player.velocity.y = gameVariables.minVelocity * Math.cos(player.angle / 180 * Math.PI);
@@ -21,7 +26,7 @@ $( 'body' ).keydown(function(e) {
     gameVariables.isAccelerating = true;
     gameVariables.timePressed+=10;
   } else if (e.keyCode === 40) {      //DOWN
-    console.log(player.x, player.y);
+
   } else if (e.keyCode === 32) {
 
   }

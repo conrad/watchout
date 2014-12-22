@@ -5,9 +5,7 @@ var gameCycle = function () {
   // check acceleration state
   if (gameVariables.isAccelerating) {
     // make falcon glow
-    if (player.vehicle === 'falcon') {
-      $(".player").css("background-image", 'url("img/zamboni-fire.png")' );
-    }
+    $(".player").css("background-image", 'url(' + player.images[player.vehicle][1] + ')' );
     // accelerate
     if (player.totalVelocity() < gameVariables.maxVelocity) {
       player.velocity.x += gameVariables.timePressed * gameVariables.acceleration * Math.sin(player.angle / 180 * Math.PI);
@@ -15,12 +13,10 @@ var gameCycle = function () {
     }
   } else {
     // lose the glow
-    if (player.vehicle === 'falcon') {
-      $(".player").css("background-image", 'url("img/zamboni.png")' );
-    }
+    $(".player").css("background-image", 'url(' + player.images[player.vehicle][0] + ')' );
     // decelerate
-    player.velocity.x = player.velocity.x * (1 - gameVariables.acceleration * .2);
-    player.velocity.y = player.velocity.y * (1 - gameVariables.acceleration * .2);
+    player.velocity.x = player.velocity.x * (1 - gameVariables.acceleration * 0.2);
+    player.velocity.y = player.velocity.y * (1 - gameVariables.acceleration * 0.2);
   }
 
   fireLaser();
