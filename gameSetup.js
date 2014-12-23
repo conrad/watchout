@@ -39,6 +39,8 @@ var moveAsteroids = function () {
 
 var initializeGraphics = function() {
 
+  player.life = player.initialLife;
+
   starGraphics = d3.select("svg").selectAll('circle').data(stars, function(d) { return d.id; });
   starGraphics.enter().append('circle')
     .attr('r', function(d) { return d.radius; })
@@ -54,6 +56,9 @@ var initializeGraphics = function() {
     .attr('width', gameVariables.asteroidWidth + 'px')
     .attr('x', function(d) { return d.x; })
     .attr('y', function(d) { return d.y; });
+
+  $('.life').append('<div class="lifeBar"></div>');
+  $('.velocityReader').append('<div class="velocityBar"></div>');
 };
 
 
@@ -61,8 +66,10 @@ var updateGraphics = function() {
   graphics = d3.select("svg").selectAll('image').data(asteroids.createArray(), function(d) { return d.id; });
   graphics.transition().ease('linear').duration(4000)
     .tween('custom', tweenWithCollisionDetection)
-    .attr('x', function(d) { return d.x; })
-    .attr('y', function(d) { return d.y; });
+    .attr('x', function(d) { return d.center()[0]; })
+    .attr('y', function(d) { return d.center()[1]; });
+  // How can you use d3 here to update the scoreboard
+  // d3.select('.collisions').selectAll('span').data([gameVariables.collisions])
 };
 
 var updateStars = function() {
@@ -145,6 +152,18 @@ var onCollision = function (player, enemy) {
     // add explosion
     explode(enemy.attr('x'), enemy.attr('y'));
 
+    // increment collisions in scoreboard -- or maybe do a countdown to when you would die.
+    // <div class="collisions">Collisions: <span>0</span></div>
+    // gameVariables.collisions++;
+    // $('.collisions span').text(gameVariables.collisions);
+
+    // decrement life when hit
+    if (player.life >= 0) {
+      player.life--;
+      $('.lifeBar').css('width', player.life * gameVariables.lifeBarMultiplier);
+      console.log('life: ', player.life);
+    }
+
     // changes to old asteroid
     var oldAsteroid = asteroids[enemy.data()[0].id];
     if (oldAsteroid !== undefined) {
@@ -211,8 +230,11 @@ var checkLaser = function(enemy, laserCallback) {
 var onLaser  = function(enemy) {
   delete asteroids[enemy.data()[0].id];
   explode(enemy.attr('x'), enemy.attr('y'));
-  // debugger;
-  // console.log(d3.)
+
+  gameVariables.destroyed++;
+  // could use d3 to create array of destroyed asteroids, then return its length
+  $('.destroyed span').text(gameVariables.destroyed);
+
   graphics = d3.select("svg").selectAll('image').data(asteroids.createArray(), function(d) { return d.id; });
   graphics.exit().remove();
   // add all matching enemies to array
@@ -224,14 +246,14 @@ var Star = function(id) {
   this.radius = Math.random() * 3;
   this.x = Math.random() * gameWidth;
   this.y = (Math.random() * 4 * gameHeight);
-}
+};
 
 Star.prototype.center = function() {
   return [this.x + this.radius / 2, this.y + this.radius / 2];
 };
 Star.prototype.nextMove = function() {
 
-  this.y -= (Math.random() * this.radius * gameHeight)
+  this.y -= (Math.random() * this.radius * gameHeight);
 };
 
 var createStars = function (n) {
@@ -249,17 +271,52 @@ var moveStars = function () {
   updateStars();
 };
 
+// var velocityBar = function () {
+  // var bar = d3.select('.velocityReader').selectAll('.velocityReader span').data(player.totalVelocity() );
+  // bar.enter().append();
+  // bar.exit().remove();
+// };
 
 
+var newGame = function () {
 
+  // if (gameVariables.gameOver === true) {   // && gameVariables.firing === true) {   // Not working properly
+  gameVariables.gameOver = false;
+  $('.gameover').remove();
 
+  // Remove asteroids
+  // for (var i = 0; i < asteroids.maxId; i++ ){
+  //   delete asteroids[asteroids[id]];
+  // }
+  asteroids.deleteAsteroids();
+  d3.select("svg").selectAll('image').data(asteroids.createArray(), function(d) { return d.id; }).exit().remove();
 
+  // Remove stars
+  stars = [];
+  d3.select("svg").selectAll('circle').data(stars, function(d) { return d.id; }).exit().remove();
 
-
-var chooseVehicle = function () {
-  if (player.vehicle === 'falcon') {
-    $(".player").css("background", url("img/falcon_long.png") );
-  } else if (player.vehicle === 'zamboni') {
-    $(".player").css("background", url("img/zamboni.png") );      // check filename
-  } else if (player.vehicle === '') {}
+  // restart
+  player.x = gameWidth / 2;
+  player.y = gameHeight / 2;
+  player.angle = 0;
+  player.velocity = { x : 0, y : 0 };
+  // $('.player').css('top', '50%');
+  // $('.player').css('left', '50%');
+    // .appendTo('body');
+  createStars(1000);
+  createAsteroids(20);
+  initializeGraphics();
 };
+
+
+
+
+
+// This
+// var chooseVehicle = function () {
+//   if (player.vehicle === 'falcon') {
+//     $(".player").css("background", url("img/falcon_long.png") );
+//   } else if (player.vehicle === 'zamboni') {
+//     $(".player").css("background", url("img/zamboni.png") );      // check filename
+//   } else if (player.vehicle === '') {}
+// };

@@ -37,3 +37,28 @@ html, body { margin:0; padding:0; overflow:hidden;   background: black; }
   width: 80px;
   height: 80px;
 }
+.lifeBar {
+  display: inline-block;
+  background-color: blue;
+  height: 15px;
+  width: 50px;                   /*player.initialLife();*/
+  border-radius: 2px;
+}
+.velocityBar {
+  display: inline-block;
+  background-color: white;
+  height: 15px;
+  width: 2px;
+  max-width: 300px;
+  border-radius: 2px;
+}
+.gameover {
+  position: fixed;
+  top: 40%;
+  left: 27%;
+  font-size: 100px;
+  color: white;
+
+}
+
+

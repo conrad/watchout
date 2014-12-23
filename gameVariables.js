@@ -16,6 +16,15 @@ var asteroids = {
       }
     }
     return array;
+  },
+
+  deleteAsteroids : function() {
+    for (var key in this) {
+      if ((key)*1 >= 0) {
+        delete this[key];
+      }
+    }
+    this.maxId = 0;
   }
 };
 var gameHeight = $(".gamefield").height();
@@ -43,6 +52,7 @@ var player = {
     }
   },
 
+  velocity: { x : 0, y : 0 },
   totalVelocity: function() {
     return Math.sqrt(Math.pow(this.velocity.x, 2) + Math.pow(this.velocity.y, 2));
   },
@@ -65,7 +75,6 @@ var player = {
   },
   angle: 0,
   stopAngle: 0,
-  velocity: { x : 0, y : 0 },
   acceleration: { x : 0, y : 0 },
   $element: $('.player'),
   height: function() {
@@ -76,7 +85,12 @@ var player = {
   },
   center: function() {
     return [this.x + this.width() / 2, this.y + this.height() / 2];
-  }
+  },
+  // initialLife : function() { return 3; },
+  // life : this.initialLife()
+  initialLife : 200,
+  life : this.initialLife
+  // life : gameVariables.initialLife   // This wouldn't work
 };
 var gameVariables = {
   acceleration   : 0.05,
@@ -88,8 +102,12 @@ var gameVariables = {
   boost          : 1,
   firing         : false,
   asteroidWidth  : 80,
-  asteroidHeight : 80
-
+  asteroidHeight : 80,
+  // collisions     : 0,
+  destroyed      : 0,
+  // initialLife : 200,      // How do I get this into this object?
+  lifeBarMultiplier: 1,     // should be adjusted based on initialLife
+  gameOver       : false
 };
 
 var stars = [];

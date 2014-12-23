@@ -11,8 +11,6 @@ $( 'body' ).keydown(function(e) {
     gameVariables.left = true;
   } else if (e.keyCode === 39) {    // RIGHT
     gameVariables.right = true;
-    console.log(player.x, player.y);
-
   }
   if (e.keyCode === 38) {    // UP
     if (gameVariables.isAccelerating === false) {
